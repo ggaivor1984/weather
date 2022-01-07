@@ -1,29 +1,59 @@
 package ru.gaivor.weather.communication;
 
 
+//import com.fasterxml.jackson.core.JsonProcessingException;
+//import com.fasterxml.jackson.databind.JsonNode;
+//import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ru.gaivor.weather.dto.WeatherDto;
 
+import static ru.gaivor.weather.utils.UtilConstants.*;
+
+
 import java.time.LocalDate;
 
-@Component
+@Service
 public class Communication {
 
     private RestTemplate restTemplate = new RestTemplate();
-    private final String URL = "https://api.weather.yandex.ru/v2/forecast?lat=60.005167&lon=30.229082";
+    //See my comments below
+//    private static final ObjectMapper mapper = new ObjectMapper();
+//    private String temperatureGotByJackson;
 
     public WeatherDto getWeatherFromYandex() {
         WeatherDto weatherDto = new WeatherDto();
         HttpHeaders headers = new HttpHeaders();
-        headers.set("X-Yandex-API-Key", "a9dc98ef-6d37-437e-9c7b-d8c0d32aed35");
+        headers.set(KEY_NAME, TOKEN);
         HttpEntity<String> httpEntity = new HttpEntity<>("", headers);
-        ResponseEntity<String> weatherFromYandex = restTemplate.exchange(URL, HttpMethod.GET, httpEntity, String.class);
+        ResponseEntity<String> weatherFromYandex = restTemplate.exchange(GET_TEMP_FOR_CERTAIN_LOCATION_URL,
+                HttpMethod.GET, httpEntity, String.class);
+
+        //As your task demands not to use any additional libraries to extract temperature, here is some tricky way to get it
         String forParsing = weatherFromYandex.getBody();
-        String searchedString = forParsing.substring(forParsing.indexOf("uptime"),
-                (forParsing.indexOf("uptime") + 27));
-        String temperature = String.valueOf(searchedString.charAt(searchedString.length() - 1));
+        String searchedString = forParsing.substring(forParsing.indexOf(PARSING_START_WORD),
+                (forParsing.indexOf(PARSING_START_WORD) + NUMBER_OF_CHARS_IN_JSON));
+        String temperature = searchedString.substring(searchedString.length() - TEMPERATURE_VALUE_CHARS);
+        if (temperature.contains(",")) {
+            temperature.replace(",", "");
+        }
+
+        //But I would better do it this way:
+//        try {
+//            JsonNode root = mapper.readTree(weatherFromYandex.getBody());
+//            JsonNode factTemp = root.path("fact");
+//            if (!factTemp.isMissingNode()) {
+//               temperatureGotByJackson =  factTemp.path("temp").asText();
+//            }
+//            } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
+//        weatherDto.setValue(temperatureGotByJackson);
+//        weatherDto.setDate(LocalDate.now());
+
         weatherDto.setValue(temperature);
         weatherDto.setDate(LocalDate.now());
 
