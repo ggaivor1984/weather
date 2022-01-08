@@ -7,7 +7,7 @@ import java.util.List;
 public interface WeatherService {
     String getLatestTemperatureFromDB();
 
-    List<Weather> getWeatherHistory();
+   // List<Weather> getWeatherHistory();
 
     void save(Weather weather);
 }

@@ -28,9 +28,9 @@ public class GenericWeatherService implements WeatherService {
         return weatherRepository.getLatestTemperature();
     }
 
-    public List<Weather> getWeatherHistory() {
-        return weatherRepository.findAll();
-    }
+    //public List<Weather> getWeatherHistory() {
+//        return weatherRepository.findAll();
+//    }
 
     public void save(Weather weather) {
         weatherRepository.save(weather);
