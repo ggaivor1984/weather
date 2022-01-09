@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/db.changelog1.yaml
+  - changeSet:
+      id: 1
+      author: gaivor
+      changes:
+        - createTable:
+            tableName: weather_history
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: weather_date
+                  type: date
+                  constraints:
+                    unique: false
+                    nullable: true
+              - column:
+                  name: weather_value
+                  type: varchar(512)
+                  constraints:
+                    nullable: true
