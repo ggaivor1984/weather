@@ -38,7 +38,7 @@ public class Communication {
                 (forParsing.indexOf(PARSING_START_WORD) + NUMBER_OF_CHARS_IN_JSON));
         String temperature = searchedString.substring(searchedString.length() - TEMPERATURE_VALUE_CHARS);
         if (temperature.contains(",")) {
-            temperature.replace(",", "");
+            temperature = temperature.replace(",", "");
         }
 
         //But I would better do it this way:
